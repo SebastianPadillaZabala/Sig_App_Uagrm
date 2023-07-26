@@ -1,6 +1,7 @@
 # sig_app
 
-A new Flutter project.
+Proyecto final de la materia Sistemas de Información Geografica Grupo F.
+App Movil.
 
 ## Getting Started
 
