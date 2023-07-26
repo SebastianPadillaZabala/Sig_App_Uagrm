@@ -1,6 +1,6 @@
 # sig_app
 
-Proyecto final de la materia Sistemas de Información Geografica Grupo F.
+Proyecto final de la Materia Sistemas de Información Geografica Grupo F.
 App Movil.
 
 ## Getting Started
