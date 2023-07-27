@@ -61,7 +61,7 @@ class TrafficService {
   }
 
   Future<String> getInformationByCoors (LatLng coors) async {  
-    //String apiKeyMap = 'AIzaSyB8rhFmkdDc17R2dmaRHH6r6bBn0olZ8tM';
+  
     final currentPosition = await Geolocator.getCurrentPosition();
      String apiUrl = '$_basePlacesUrl/${currentPosition.longitude},${currentPosition.latitude}.json';
     final response = await _dioPlaces2.get(apiUrl, queryParameters: {
@@ -74,8 +74,7 @@ class TrafficService {
     } else {
       throw Exception("Error obteniendo el lugar: ${response.statusCode}");
     }
-    /*final placesResponse = PlacesResponse.fromJson(response.body);
-    return placesResponse.features[0];*/
+    
   }
 
   Future<String> getInformationByCoors2 (LatLng coors) async {  
@@ -90,8 +89,6 @@ class TrafficService {
     } else {
       throw Exception("Error obteniendo el lugar: ${response.statusCode}");
     }
-    /*final placesResponse = PlacesResponse.fromJson(response.body);
-    return placesResponse.features[0];*/
   }
 
   Future<String> getInformationPlace( LatLng coors ) async {
