@@ -36,7 +36,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
   Future<RouteDestination> getCoorsStartToEnd(LatLng start, LatLng end, String destino) async {
 
-    String apiKeyMap = 'AIzaSyCd5hxxueKmI97p0Pl1IXIJD9VswUNbQo8';
+    String apiKeyMap = '';
 
     String urlOriginToDestinationDirectionDetails =
         'https://maps.googleapis.com/maps/api/directions/json?origin=${start.latitude},${start.longitude}&destination=${end.latitude},${end.longitude}&language=es&key=$apiKeyMap';
@@ -56,7 +56,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
   Future<RouteDestination> getCoorsStartToEnd2(LatLng start, LatLng end, String destino) async {
   
-    String apiKeyMap = 'AIzaSyCd5hxxueKmI97p0Pl1IXIJD9VswUNbQo8';
+    String apiKeyMap = '';
 
     String urlOriginToDestinationDirectionDetails =
         'https://maps.googleapis.com/maps/api/directions/json?origin=${start.latitude},${start.longitude}&destination=${end.latitude},${end.longitude}&language=es&mode=walking&key=$apiKeyMap';
