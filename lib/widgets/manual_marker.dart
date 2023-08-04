@@ -52,7 +52,7 @@ class _ManualMarkerBody extends StatelessWidget {
                   child: Icon(
                     Icons.location_on_rounded,
                     size: constraints.maxWidth * 0.1,
-                    color: Color.fromRGBO(42, 57, 100, 1),
+                    color: const Color.fromRGBO(42, 57, 100, 1),
                   ),
                 ),
               ),

@@ -25,38 +25,68 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         (event, emit) => emit(state.copyWith(displayManualMarker: true)));
     on<OnDeactivateManualMarkerEvent>(
         (event, emit) => emit(state.copyWith(displayManualMarker: false)));
-    
-    on<OnSetOrigin>((event, emit) => emit(state.copyWith(pointOrigin: event.pointOrigin)));
-    on<OnSetDestination>((event, emit) => emit(state.copyWith(pointDestino: event.pointDestino)));
 
-    on<OnNewPlacesFoundEvent>((event, emit) => emit(state.copyWith(places: event.places)));
+    on<OnSetOrigin>(
+        (event, emit) => emit(state.copyWith(pointOrigin: event.pointOrigin)));
+    on<OnSetDestination>((event, emit) =>
+        emit(state.copyWith(pointDestino: event.pointDestino)));
 
-    on<AddToHistoryEvent>((event, emit) => emit(state.copyWith(history: [event.place, ...state.history])));
+    on<OnNewPlacesFoundEvent>(
+        (event, emit) => emit(state.copyWith(places: event.places)));
+
+    on<AddToHistoryEvent>((event, emit) =>
+        emit(state.copyWith(history: [event.place, ...state.history])));
   }
 
-  Future<RouteDestination> getCoorsStartToEnd(LatLng start, LatLng end, String destino) async {
+  String formatDistance(double distance) {
+    if (distance >= 1000) {
+      double kilometers = distance / 1000.0;
+      return '${kilometers.toStringAsFixed(1)} km';
+    } else {
+      return '${distance.toStringAsFixed(1)} metros';
+    }
+  }
 
+  Future<RouteDestination> getCoorsStartToEnd(
+      LatLng start, LatLng end, String destino) async {
     String apiKeyMap = '';
+
+    final trafficResponse = await trafficService.getCoorsStartToEnd(start, end);
+
+    final distance = trafficResponse.routes[0].distance;
+
+    final formattedDistance = formatDistance(distance);
 
     String urlOriginToDestinationDirectionDetails =
         'https://maps.googleapis.com/maps/api/directions/json?origin=${start.latitude},${start.longitude}&destination=${end.latitude},${end.longitude}&language=es&key=$apiKeyMap';
-    var responseDirectionApi = await receiveRequest(urlOriginToDestinationDirectionDetails);
+    var responseDirectionApi =
+        await receiveRequest(urlOriginToDestinationDirectionDetails);
 
-    final prueba = responseDirectionApi['routes'][0]['overview_polyline']['points'];
+    final prueba =
+        responseDirectionApi['routes'][0]['overview_polyline']['points'];
 
-    final durationString = responseDirectionApi['routes'][0]['legs'][0]['duration']['text'];
-    final distanceString = responseDirectionApi['routes'][0]['legs'][0]['distance']['text'];
+    final durationString =
+        responseDirectionApi['routes'][0]['legs'][0]['duration']['text'];
+    final distanceString =
+        responseDirectionApi['routes'][0]['legs'][0]['distance']['text'];
 
     return RouteDestination(
         duration: durationString,
-        distance: distanceString,
+        distance: formattedDistance,
         endPlace: destino,
         e_points: prueba);
   }
 
-  Future<RouteDestination> getCoorsStartToEnd2(LatLng start, LatLng end, String destino) async {
-  
+  Future<RouteDestination> getCoorsStartToEnd2(
+      LatLng start, LatLng end, String destino) async {
     String apiKeyMap = '';
+
+    final trafficResponse =
+        await trafficService.getCoorsStartToEnd2(start, end);
+
+    final distance = trafficResponse.routes[0].distance;
+
+    final formattedDistance = formatDistance(distance);
 
     String urlOriginToDestinationDirectionDetails =
         'https://maps.googleapis.com/maps/api/directions/json?origin=${start.latitude},${start.longitude}&destination=${end.latitude},${end.longitude}&language=es&mode=walking&key=$apiKeyMap';
@@ -65,13 +95,15 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
     final prueba =
         responseDirectionApi['routes'][0]['overview_polyline']['points'];
-    
-    final durationString = responseDirectionApi['routes'][0]['legs'][0]['duration']['text'];
-    final distanceString = responseDirectionApi['routes'][0]['legs'][0]['distance']['text'];
+
+    final durationString =
+        responseDirectionApi['routes'][0]['legs'][0]['duration']['text'];
+    final distanceString =
+        responseDirectionApi['routes'][0]['legs'][0]['distance']['text'];
 
     return RouteDestination(
         duration: durationString,
-        distance: distanceString,
+        distance: formattedDistance,
         endPlace: destino,
         e_points: prueba);
   }
@@ -94,16 +126,15 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
   Future<void> currentPositionToOrigen() async {
     final position = await Geolocator.getCurrentPosition();
-    final posLatLng = LatLng( position.latitude, position.longitude );
+    final posLatLng = LatLng(position.latitude, position.longitude);
     final placeName = await trafficService.getInformationPlace(posLatLng);
     final origen = PointOrigin(name: placeName, position: posLatLng);
     add(OnSetOrigin(origen));
   }
 
-   Future getPlacesByQuery( LatLng proximity, String query) async {
+  Future getPlacesByQuery(LatLng proximity, String query) async {
     final newPlaces = await trafficService.getResultsByQuery(proximity, query);
 
     add(OnNewPlacesFoundEvent(newPlaces));
   }
-
 }
